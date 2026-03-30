@@ -1,0 +1,9 @@
+node_modules/
+.git/
+vendor/
+dist/
+build/
+coverage/
+tailwind.css
+.DS_Store
+*.log

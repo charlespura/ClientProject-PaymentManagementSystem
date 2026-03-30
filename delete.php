@@ -4,43 +4,56 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 include("connection.php");
+include("analytics.php");
 
-function deleteRecord($id, $conn) {
-    $stmt = $conn->prepare("DELETE FROM ClientTransactions WHERE id = ?");
-    if (!$stmt) {
-        return false;
-    }
+ensure_soft_delete_support($conn);
 
-    $stmt->bind_param("i", $id);
-    $success = $stmt->execute();
-    $stmt->close();
-
-    return $success;
-}
-
-if (isset($_GET["delete_id"])) {
-    $delete_id = (int) $_GET["delete_id"];
-    echo "<script>
-        var result = confirm('Are you sure you want to delete this record?');
-        if (result) {
-            window.location.href = 'delete.php?confirmed_delete_id={$delete_id}';
-        } else {
-            window.location.href = 'admin.php';
-        }
-    </script>";
+function redirect_with_status($query)
+{
+    header("Location: admin.php?" . $query);
     exit;
 }
 
-if (isset($_GET["confirmed_delete_id"])) {
-    $confirmed_delete_id = (int) $_GET["confirmed_delete_id"];
-
-    if (deleteRecord($confirmed_delete_id, $conn)) {
-        header("Location: admin.php");
-        exit;
-    }
-
-    echo "Error deleting record: " . $conn->error;
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    redirect_with_status("");
 }
 
-$conn->close();
+$action = $_POST["action"] ?? "";
+$id = isset($_POST["id"]) ? (int) $_POST["id"] : 0;
+
+if ($id <= 0) {
+    redirect_with_status("");
+}
+
+if ($action === "soft_delete") {
+    $stmt = $conn->prepare("UPDATE ClientTransactions SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL");
+    if ($stmt) {
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
+    }
+    redirect_with_status("deleted=1&undo_id=" . $id . "#trash");
+}
+
+if ($action === "restore") {
+    $stmt = $conn->prepare("UPDATE ClientTransactions SET deleted_at = NULL WHERE id = ? AND deleted_at IS NOT NULL");
+    if ($stmt) {
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
+    }
+    redirect_with_status("restored=1#trash");
+}
+
+if ($action === "permanent_delete") {
+    $stmt = $conn->prepare("DELETE FROM ClientTransactions WHERE id = ? AND deleted_at IS NOT NULL");
+    if ($stmt) {
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
+    }
+    redirect_with_status("purged=1#trash");
+}
+
+redirect_with_status("");
 ?>

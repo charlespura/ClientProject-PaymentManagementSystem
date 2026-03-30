@@ -1,0 +1,27 @@
+{
+  "name": "business",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "npx @tailwindcss/cli -i ./tailwind.input.css -o ./tailwind.css --minify",
+    "watch:css": "npx @tailwindcss/cli -i ./tailwind.input.css -o ./tailwind.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charlespura/ClientProject-PaymentManagementSystem.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/charlespura/ClientProject-PaymentManagementSystem/issues"
+  },
+  "homepage": "https://github.com/charlespura/ClientProject-PaymentManagementSystem#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.2.2",
+    "tailwindcss": "^4.2.2"
+  }
+}

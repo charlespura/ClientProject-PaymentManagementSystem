@@ -179,6 +179,11 @@ button[type="submit"] {
     font: inherit;
 }
 
+.hero-actions {
+    display: flex;
+    align-items: center;
+}
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -302,6 +307,29 @@ button[type="submit"] {
     padding: 16px;
     background: linear-gradient(135deg, #dbeafe 0%, #ecfccb 100%);
     line-height: 1.5;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+}
+
+.detail-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 16px;
+    background: #f8fafc;
+}
+
+.detail-card span {
+    display: block;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.detail-card strong {
+    font-size: 1.05rem;
 }
 
 .table-wrap {
@@ -465,6 +493,13 @@ th {
     .hero-card {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .form-container {
+        right: 16px;
+        top: 16px;
+        width: calc(100% - 32px);
+        max-height: calc(100vh - 32px);
     }
 
     .stats-grid,

@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@source "./*.php";
+
+@theme {
+    --font-sans: "Instrument Sans", "Segoe UI", sans-serif;
+
+    --color-brand-50: #f0f7ff;
+    --color-brand-100: #dcecff;
+    --color-brand-200: #b7d8ff;
+    --color-brand-300: #7ebdff;
+    --color-brand-400: #429bff;
+    --color-brand-500: #1778ff;
+    --color-brand-600: #0d5fe0;
+    --color-brand-700: #104cb1;
+    --color-brand-800: #153f8e;
+    --color-brand-900: #173876;
+
+    --shadow-soft: 0 24px 60px rgba(15, 23, 42, 0.14);
+}
