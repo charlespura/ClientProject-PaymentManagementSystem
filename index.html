@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="description" content="Client Project & Payment Management System static demo for GitHub Pages.">
+    <link rel="icon" type="image/png" href="logo.png">
+    <title>Client Project & Payment Management System</title>
+    <style>
+        :root {
+            --bg: #eef4ff;
+            --panel: rgba(255, 255, 255, 0.82);
+            --panel-solid: #ffffff;
+            --panel-dark: #081221;
+            --text: #0f172a;
+            --muted: #64748b;
+            --line: rgba(148, 163, 184, 0.28);
+            --brand: #1d4ed8;
+            --brand-2: #0ea5e9;
+            --emerald: #059669;
+            --amber: #d97706;
+            --rose: #dc2626;
+            --shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+            --radius: 28px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Instrument Sans", "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(29, 78, 216, 0.16), transparent 26%),
+                radial-gradient(circle at top right, rgba(14, 165, 233, 0.14), transparent 30%),
+                linear-gradient(180deg, #f8fbff 0%, #eef4ff 44%, #f4f7fb 100%);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .app::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+            background-size: 72px 72px;
+            opacity: 0.45;
+        }
+
+        .sidebar {
+            width: 280px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding: 24px 20px;
+            background: rgba(8, 18, 33, 0.96);
+            color: #fff;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .brand-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-logo img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+        }
+
+        .eyebrow {
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+            font-size: 0.72rem;
+            color: #9fb2cc;
+        }
+
+        .sidebar h1,
+        .hero h2,
+        .section-title,
+        .modal-title {
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        .overview-card,
+        .revenue-card {
+            margin-top: 28px;
+            padding: 20px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .overview-card strong,
+        .revenue-card strong {
+            display: block;
+            margin-top: 12px;
+            font-size: 2rem;
+        }
+
+        .overview-card p,
+        .revenue-card p {
+            margin: 10px 0 0;
+            color: #cbd5e1;
+            line-height: 1.65;
+            font-size: 0.92rem;
+        }
+
+        .sidebar nav {
+            margin-top: 24px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .nav-link,
+        .nav-button {
+            display: block;
+            padding: 14px 16px;
+            border-radius: 18px;
+            color: #dbe7f6;
+            background: rgba(255, 255, 255, 0.03);
+            border: 0;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .nav-link:hover,
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, var(--brand-2), var(--brand));
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .content {
+            flex: 1;
+            min-width: 0;
+            padding: 16px;
+        }
+
+        .shell {
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.58);
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(16px);
+            border-radius: 32px;
+            box-shadow: var(--shadow);
+            padding: 24px;
+            min-height: calc(100vh - 32px);
+        }
+
+        .topbar {
+            display: none;
+            margin-bottom: 18px;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 28px;
+        }
+
+        .hero h2 {
+            margin-top: 12px;
+            font-size: clamp(2rem, 4vw, 3.3rem);
+            max-width: 900px;
+        }
+
+        .hero p {
+            max-width: 720px;
+            color: var(--muted);
+            line-height: 1.75;
+            margin: 14px 0 0;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .chip-card,
+        .panel,
+        .stat-card,
+        .mini-card,
+        .insight-card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+        }
+
+        .chip-card {
+            padding: 16px 18px;
+            min-width: 170px;
+            background: #f8fafc;
+        }
+
+        .chip-card strong {
+            display: block;
+            margin-top: 6px;
+            font-size: 1.05rem;
+        }
+
+        .primary-btn,
+        .secondary-btn,
+        .danger-btn,
+        .ghost-btn {
+            border: 0;
+            border-radius: 18px;
+            padding: 13px 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .primary-btn {
+            background: #020617;
+            color: #fff;
+        }
+
+        .primary-btn:hover {
+            background: var(--brand);
+            transform: translateY(-1px);
+        }
+
+        .secondary-btn {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .danger-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .ghost-btn {
+            background: #fff;
+            color: #475569;
+            border: 1px solid var(--line);
+        }
+
+        .overview-grid,
+        .stats-grid,
+        .analytics-grid,
+        .insights-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .overview-grid {
+            margin-top: 28px;
+            grid-template-columns: 1.8fr 1fr;
+        }
+
+        .hero-panel {
+            padding: 28px;
+            color: #fff;
+            background: linear-gradient(135deg, #020617 0%, #0f172a 54%, #1e293b 100%);
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-panel::after {
+            content: "";
+            position: absolute;
+            inset: auto -30px -40px auto;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.28), transparent 70%);
+        }
+
+        .hero-panel p {
+            color: #cbd5e1;
+            max-width: 620px;
+            line-height: 1.7;
+        }
+
+        .hero-panel h3 {
+            margin: 12px 0 0;
+            font-size: clamp(1.9rem, 3vw, 3rem);
+            max-width: 780px;
+        }
+
+        .hero-panel-stats {
+            margin-top: 26px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            max-width: 440px;
+        }
+
+        .hero-panel-stats .mini-card {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.08);
+            padding: 18px;
+        }
+
+        .hero-panel-stats strong {
+            display: block;
+            margin-top: 6px;
+            font-size: 1.7rem;
+        }
+
+        .performance-card {
+            padding: 24px;
+            background: linear-gradient(145deg, #1d4ed8 0%, #0ea5e9 100%);
+            color: #fff;
+            border-radius: 30px;
+        }
+
+        .performance-body {
+            height: 100%;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text);
+            padding: 24px;
+        }
+
+        .progress {
+            height: 12px;
+            border-radius: 999px;
+            background: #dbeafe;
+            overflow: hidden;
+            margin-top: 18px;
+        }
+
+        .progress > div {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand), var(--brand-2));
+            border-radius: inherit;
+        }
+
+        .stats-grid {
+            margin-top: 18px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .stat-card,
+        .panel {
+            padding: 24px;
+        }
+
+        .stat-card strong {
+            display: block;
+            margin-top: 16px;
+            font-size: clamp(2rem, 3vw, 2.6rem);
+        }
+
+        .stat-card p,
+        .panel p,
+        .mini-card p,
+        .insight-card p {
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .stat-card.emerald {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+        }
+
+        .stat-card.amber {
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+
+        .stat-card.blue {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        .analytics-grid {
+            margin-top: 18px;
+            grid-template-columns: 1.7fr 1fr;
+        }
+
+        .bar-chart {
+            margin-top: 26px;
+            min-height: 320px;
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 14px;
+            align-items: end;
+        }
+
+        .bar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-shell {
+            width: 100%;
+            height: 220px;
+            padding: 10px;
+            border-radius: 24px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: end;
+        }
+
+        .bar-fill {
+            width: 100%;
+            border-radius: 18px;
+            background: linear-gradient(180deg, #38bdf8 0%, #2563eb 100%);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22);
+            min-height: 24px;
+        }
+
+        .payment-list {
+            margin-top: 26px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .payment-row label {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px;
+            color: #dbeafe;
+        }
+
+        .payment-track {
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .payment-track div {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #67e8f9, #60a5fa);
+        }
+
+        .insights-grid {
+            margin-top: 18px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .insight-card {
+            padding: 22px;
+        }
+
+        .insight-card.dark {
+            background: linear-gradient(135deg, #020617, #111827);
+            color: #e2e8f0;
+            border-color: transparent;
+        }
+
+        .records-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            width: min(100%, 380px);
+        }
+
+        .search-box input,
+        .field input,
+        .field select {
+            width: 100%;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: #f8fafc;
+            padding: 14px 16px;
+            color: var(--text);
+            outline: none;
+        }
+
+        .search-box input:focus,
+        .field input:focus,
+        .field select:focus {
+            border-color: #60a5fa;
+            background: #fff;
+        }
+
+        .table-wrap {
+            overflow: auto;
+            border-radius: 24px;
+            border: 1px solid var(--line);
+        }
+
+        table {
+            width: 100%;
+            min-width: 1100px;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        th,
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            vertical-align: top;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-size: 0.72rem;
+            color: #64748b;
+        }
+
+        tbody tr:hover {
+            background: #f8fbff;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .status-pill.paid {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-pill.not-paid {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .actions button {
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .actions .update {
+            background: #020617;
+            border-color: #020617;
+            color: #fff;
+        }
+
+        .actions .delete {
+            background: #fff1f2;
+            color: #be123c;
+            border-color: #fecdd3;
+        }
+
+        .section {
+            margin-top: 18px;
+        }
+
+        .section > .section-label {
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+            font-size: 0.72rem;
+            color: #64748b;
+        }
+
+        .section-title {
+            margin-top: 8px;
+            font-size: 2rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            padding: 32px 16px;
+        }
+
+        .flash {
+            margin: 18px 0 0;
+            padding: 16px 18px;
+            border-radius: 20px;
+            border: 1px solid;
+            display: none;
+        }
+
+        .flash.show {
+            display: block;
+        }
+
+        .flash.success {
+            background: #ecfdf5;
+            color: #065f46;
+            border-color: #a7f3d0;
+        }
+
+        .flash.warn {
+            background: #fffbeb;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+
+        .overlay,
+        .backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.58);
+            backdrop-filter: blur(8px);
+            display: none;
+            z-index: 40;
+        }
+
+        .overlay.show,
+        .backdrop.show {
+            display: block;
+        }
+
+        .drawer,
+        .modal {
+            position: fixed;
+            z-index: 50;
+            display: none;
+        }
+
+        .drawer.show,
+        .modal.show {
+            display: block;
+        }
+
+        .drawer {
+            inset: 0 0 0 auto;
+            width: min(100%, 720px);
+            background: #fff;
+            box-shadow: var(--shadow);
+            overflow: auto;
+            padding: 24px;
+        }
+
+        .modal {
+            inset: 50% auto auto 50%;
+            transform: translate(-50%, -50%);
+            width: min(calc(100% - 32px), 920px);
+            max-height: calc(100vh - 32px);
+            overflow: auto;
+            background: #fff;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: var(--shadow);
+            padding: 24px;
+        }
+
+        .modal.small {
+            width: min(calc(100% - 32px), 560px);
+        }
+
+        .drawer-head,
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: start;
+        }
+
+        .close-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: #f8fafc;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+
+        .form-grid {
+            margin-top: 22px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .form-actions,
+        .modal-actions {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .detail-grid {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .detail-card {
+            border: 1px solid var(--line);
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 18px;
+        }
+
+        .detail-card strong {
+            display: block;
+            margin-top: 6px;
+            font-size: 1.05rem;
+            word-break: break-word;
+        }
+
+        .mobile-sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            width: min(78vw, 300px);
+            transform: translateX(-100%);
+            transition: transform 0.2s ease;
+            z-index: 60;
+        }
+
+        .mobile-sidebar.show {
+            transform: translateX(0);
+        }
+
+        .menu-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: #fff;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid,
+            .insights-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+
+            .topbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .overview-grid,
+            .analytics-grid,
+            .hero {
+                grid-template-columns: 1fr;
+                display: grid;
+            }
+
+            .hero-actions {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .shell {
+                padding: 18px;
+                border-radius: 24px;
+            }
+
+            .stats-grid,
+            .insights-grid,
+            .form-grid,
+            .detail-grid,
+            .hero-panel-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .records-head {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .bar-chart {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-logo">
+                    <img src="logo.png" alt="Business logo">
+                </div>
+                <div>
+                    <p class="eyebrow">Client Ops</p>
+                    <h1>Payment System</h1>
+                </div>
+            </div>
+
+            <div class="overview-card">
+                <p class="eyebrow">Overview</p>
+                <strong id="sidebarTotalClients">170</strong>
+                <p>Client records managed inside one professional dashboard.</p>
+            </div>
+
+            <nav>
+                <a class="nav-link" href="#overview">Dashboard</a>
+                <a class="nav-link" href="#analytics">Analytics</a>
+                <a class="nav-link" href="#insights">Insights</a>
+                <a class="nav-link" href="#records">Client Records</a>
+                <a class="nav-link" href="#trash">Trash Management</a>
+                <button class="nav-button" id="openAddFromSidebar" type="button">Add Client Record</button>
+            </nav>
+
+            <div class="revenue-card">
+                <p class="eyebrow">Collected Revenue</p>
+                <strong id="sidebarPaidRevenue">₱57,557.00</strong>
+                <p><span id="sidebarCompletion">92.4%</span> completion rate from all tracked records.</p>
+            </div>
+        </aside>
+
+        <div class="content">
+            <div class="shell">
+                <div class="topbar">
+                    <button class="menu-btn" id="openMobileMenu" type="button">☰</button>
+                    <button class="primary-btn" id="openAddFromTop" type="button">Add Client Record</button>
+                </div>
+
+                <header class="hero">
+                    <div>
+                        <p class="eyebrow" style="color:#64748b;">Client Project &amp; Payment Management System</p>
+                        <h2>Professional dashboard for projects, billing, and payment tracking.</h2>
+                        <p>Monitor revenue, outstanding balances, payment methods, and project progress in one clean interface while keeping the same workflow for records, updates, trash management, and quick reporting.</p>
+                    </div>
+                    <div class="hero-actions">
+                        <div class="chip-card">
+                            <span class="eyebrow" style="color:#64748b;">Top Payment</span>
+                            <strong id="topPaymentHero">gcash</strong>
+                        </div>
+                        <button class="primary-btn" id="openAddFromHero" type="button">Add Client Record</button>
+                    </div>
+                </header>
+
+                <div class="flash show warn" style="display:block;">
+                    Demo Note: index.html uses anonymized sample data only. For real confidential client records, use your local admin.php and database workflow.
+                </div>
+
+                <div id="flashMessage" class="flash"></div>
+
+                <section id="overview" class="section">
+                    <div class="overview-grid">
+                        <article class="hero-panel">
+                            <p class="eyebrow">Dashboard</p>
+                            <h3>Track projects, payments, and account health in one screen.</h3>
+                            <p>All working records stay in one browser-ready dashboard with stronger hierarchy, cleaner cards, and a static setup that can be deployed directly on GitHub Pages.</p>
+                            <div class="hero-panel-stats">
+                                <div class="mini-card">
+                                    <span class="eyebrow">Outstanding</span>
+                                    <strong id="outstandingHero">₱10,625.00</strong>
+                                </div>
+                                <div class="mini-card">
+                                    <span class="eyebrow">Average Ticket</span>
+                                    <strong id="averageTicketHero">₱401.07</strong>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="performance-card">
+                            <div class="performance-body">
+                                <p class="eyebrow" style="color:#1d4ed8;">Performance</p>
+                                <h3 id="completionRateHero" style="font-size:2.3rem;margin:8px 0 0;">92.4%</h3>
+                                <p>Completion rate across all client transactions in your dashboard.</p>
+                                <div class="progress"><div id="completionBar" style="width:92.4%;"></div></div>
+                                <div style="display:grid;gap:12px;margin-top:18px;">
+                                    <div class="mini-card" style="padding:16px;">
+                                        <span class="eyebrow" style="color:#64748b;">Paid Projects</span>
+                                        <strong id="paidCountMini">157</strong>
+                                    </div>
+                                    <div class="mini-card" style="padding:16px;">
+                                        <span class="eyebrow" style="color:#64748b;">Unpaid Projects</span>
+                                        <strong id="unpaidCountMini">13</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="stats-grid">
+                        <article class="stat-card">
+                            <p class="eyebrow" style="color:#64748b;">Total Clients</p>
+                            <strong id="totalClientsCard">170</strong>
+                            <p>All client transactions in the system.</p>
+                        </article>
+                        <article class="stat-card emerald">
+                            <p class="eyebrow" style="color:#047857;">Paid Projects</p>
+                            <strong id="paidProjectsCard">157</strong>
+                            <p><span id="completionTextCard">92.4%</span> completion rate.</p>
+                        </article>
+                        <article class="stat-card amber">
+                            <p class="eyebrow" style="color:#b45309;">Outstanding Balance</p>
+                            <strong id="outstandingCard">₱10,625.00</strong>
+                            <p><span id="unpaidSummaryCard">13</span> records still unpaid.</p>
+                        </article>
+                        <article class="stat-card blue">
+                            <p class="eyebrow" style="color:#1d4ed8;">Total Revenue</p>
+                            <strong id="totalRevenueCard">₱68,182.00</strong>
+                            <p>Average ticket: <span id="averageTicketCard">₱401.07</span></p>
+                        </article>
+                    </div>
+                </section>
+
+                <section id="analytics" class="section">
+                    <p class="section-label">Analytics</p>
+                    <h3 class="section-title">Revenue and payment overview</h3>
+                    <div class="analytics-grid">
+                        <article class="panel">
+                            <p class="eyebrow" style="color:#64748b;">Revenue Trend</p>
+                            <h4 style="margin:8px 0 0;font-size:1.65rem;">Monthly transaction value</h4>
+                            <div class="bar-chart" id="revenueChart"></div>
+                        </article>
+
+                        <article class="panel" style="background:#020617;color:#fff;">
+                            <p class="eyebrow">Analytics</p>
+                            <h4 style="margin:8px 0 0;font-size:1.65rem;">Payment breakdown</h4>
+                            <div style="display:grid;gap:12px;margin-top:22px;">
+                                <div class="mini-card" style="padding:16px;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.08);">
+                                    <span class="eyebrow">Paid Revenue</span>
+                                    <strong id="paidRevenueBreakdown">₱57,557.00</strong>
+                                </div>
+                                <div class="mini-card" style="padding:16px;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.08);">
+                                    <span class="eyebrow">Unpaid Revenue</span>
+                                    <strong id="unpaidRevenueBreakdown">₱10,625.00</strong>
+                                </div>
+                                <div class="mini-card" style="padding:16px;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.08);">
+                                    <span class="eyebrow">Top Payment Method</span>
+                                    <strong id="topPaymentBreakdown">gcash</strong>
+                                </div>
+                            </div>
+                            <div class="payment-list" id="paymentBreakdownList"></div>
+                        </article>
+                    </div>
+                </section>
+
+                <section id="insights" class="section">
+                    <p class="section-label">System Insights</p>
+                    <h3 class="section-title">Quick business summary</h3>
+                    <div class="insights-grid">
+                        <article class="insight-card dark"><p id="insightPaid">157 paid records are already completed in the system.</p></article>
+                        <article class="insight-card" style="background:#fffbeb;border-color:#fde68a;"><p id="insightUnpaid" style="color:#92400e;">13 records still need payment follow-up.</p></article>
+                        <article class="insight-card" style="background:#eff6ff;border-color:#bfdbfe;"><p id="insightRevenue" style="color:#1e3a8a;">Revenue collected is ₱57,557.00 out of ₱68,182.00 total tracked value.</p></article>
+                        <article class="insight-card" style="background:#ecfdf5;border-color:#a7f3d0;"><p id="insightTopPayment" style="color:#065f46;">Most used payment label: gcash.</p></article>
+                    </div>
+                </section>
+
+                <section id="records" class="section">
+                    <div class="panel">
+                        <div class="records-head">
+                            <div>
+                                <p class="section-label">Client Records</p>
+                                <h3 class="section-title">Projects and payment list</h3>
+                            </div>
+                            <div class="search-box">
+                                <label for="searchInput" class="eyebrow" style="color:#64748b;display:block;margin-bottom:8px;">Search Records</label>
+                                <input id="searchInput" type="search" placeholder="Search by client, system, status, payment">
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Client Name</th>
+                                        <th>Transaction Date</th>
+                                        <th>Status</th>
+                                        <th>System Name</th>
+                                        <th>Payment</th>
+                                        <th>Date Completed</th>
+                                        <th>Transaction Cost</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recordsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="trash" class="section">
+                    <div class="panel">
+                        <div class="records-head">
+                            <div>
+                                <p class="section-label">Trash Management</p>
+                                <h3 class="section-title">Recently deleted records</h3>
+                            </div>
+                            <div class="chip-card">
+                                <span class="eyebrow" style="color:#64748b;">Trash Count</span>
+                                <strong id="trashCount">0</strong>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Client Name</th>
+                                        <th>System Name</th>
+                                        <th>Deleted At</th>
+                                        <th>Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trashTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div class="backdrop" id="mobileBackdrop"></div>
+    <aside class="sidebar mobile-sidebar" id="mobileSidebar">
+        <div class="brand">
+            <div class="brand-logo">
+                <img src="logo.png" alt="Business logo">
+            </div>
+            <div>
+                <p class="eyebrow">Client Ops</p>
+                <h1>Payment System</h1>
+            </div>
+        </div>
+        <div class="overview-card">
+            <p class="eyebrow">Overview</p>
+            <strong id="mobileSidebarTotal">170</strong>
+            <p>Client records managed inside one professional dashboard.</p>
+        </div>
+        <nav>
+            <a class="nav-link mobile-nav" href="#overview">Dashboard</a>
+            <a class="nav-link mobile-nav" href="#analytics">Analytics</a>
+            <a class="nav-link mobile-nav" href="#insights">Insights</a>
+            <a class="nav-link mobile-nav" href="#records">Client Records</a>
+            <a class="nav-link mobile-nav" href="#trash">Trash Management</a>
+            <button class="nav-button" id="openAddFromMobile" type="button">Add Client Record</button>
+        </nav>
+    </aside>
+
+    <div class="overlay" id="drawerOverlay"></div>
+    <aside class="drawer" id="recordDrawer">
+        <div class="drawer-head">
+            <div>
+                <p class="section-label" id="drawerModeLabel">New Record</p>
+                <h3 class="modal-title" id="drawerTitle" style="font-size:2rem;margin-top:8px;">Add Client Record</h3>
+                <p style="color:#64748b;line-height:1.7;margin:10px 0 0;">Create and manage records directly in this static demo. Changes are stored in your browser so the page still works when deployed on GitHub Pages.</p>
+            </div>
+            <button class="close-btn" id="closeDrawer" type="button">&times;</button>
+        </div>
+
+        <form id="recordForm">
+            <div class="form-grid">
+                <div class="field full">
+                    <label for="clientName">Client Name</label>
+                    <input id="clientName" name="client_name" required>
+                </div>
+                <div class="field">
+                    <label for="transactionDate">Transaction Date</label>
+                    <input id="transactionDate" name="transaction_date" type="date" required>
+                </div>
+                <div class="field">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" required>
+                        <option value="">Select status</option>
+                        <option value="paid">Paid</option>
+                        <option value="not_paid">Not Paid</option>
+                    </select>
+                </div>
+                <div class="field full" id="paymentFieldWrap">
+                    <label for="payment">Payment Method</label>
+                    <select id="payment" name="payment">
+                        <option value="">Select payment method</option>
+                        <option value="gcash">Gcash</option>
+                        <option value="cash">Cash</option>
+                        <option value="online">Online</option>
+                        <option value="Pending">Pending</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <input id="otherPayment" name="other_payment" placeholder="Enter custom payment method" style="margin-top:10px;display:none;">
+                </div>
+                <div class="field full">
+                    <label for="systemName">System Name</label>
+                    <input id="systemName" name="system_name" required>
+                </div>
+                <div class="field" id="dateCompletedWrap">
+                    <label for="dateCompleted">Date Completed</label>
+                    <input id="dateCompleted" name="date_completed" type="date">
+                </div>
+                <div class="field">
+                    <label for="transactionCost">Transaction Cost</label>
+                    <input id="transactionCost" name="transaction_cost" type="number" min="0" step="0.01" required>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="ghost-btn" id="cancelDrawer" type="button">Cancel</button>
+                <button class="primary-btn" type="submit">Save Record</button>
+            </div>
+        </form>
+    </aside>
+
+    <div class="backdrop" id="modalBackdrop"></div>
+    <div class="modal" id="detailModal"></div>
+    <div class="modal small" id="deleteModal"></div>
+
+    <script>
+        const STORAGE_KEY = "business_dashboard_records_v3";
+        const TRASH_KEY = "business_dashboard_trash_v3";
+
+        const seedDataRaw = String.raw`210	Sample Client 210	2025-07-10	Not Paid	Core Integration			2500
+209	Sample Client 209	2025-07-04	Paid	HR 3-4	cash	2025-07-06	700
+208	Sample Client 208	2025-06-29	Paid	Logistics Management	gcash	2025-07-01	2900
+207	Sample Client 207	2025-06-24	Not Paid	Facility Reservation	Pending		3250
+206	Sample Client 206	2025-06-20	Paid	Inventory Dashboard	gcash	2025-06-23	1500
+205	Sample Client 205	2025-06-16	Paid	Payroll Portal	online	2025-06-19	2200
+204	Sample Client 204	2025-06-12	Not Paid	CRM Setup	Pending		1800
+203	Sample Client 203	2025-06-08	Paid	Analytics Module	gcash	2025-06-10	2600
+202	Sample Client 202	2025-06-03	Paid	User Management	cash	2025-06-05	1200
+201	Sample Client 201	2025-05-30	Paid	Claims and Reimbursement	gcash	2025-06-02	1450`;
+
+        function normalizeStatus(value) {
+            return String(value).trim().toLowerCase() === "paid" ? "paid" : "not_paid";
+        }
+
+        function currency(value) {
+            return new Intl.NumberFormat("en-PH", {
+                style: "currency",
+                currency: "PHP",
+                minimumFractionDigits: 2
+            }).format(Number(value) || 0);
+        }
+
+        function number(value, digits = 0) {
+            return new Intl.NumberFormat("en-PH", {
+                minimumFractionDigits: digits,
+                maximumFractionDigits: digits
+            }).format(Number(value) || 0);
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function parseSeedData() {
+            return seedDataRaw
+                .trim()
+                .split("\n")
+                .map((line) => {
+                    const parts = line.split("\t");
+                    return {
+                        id: Number(parts[0]),
+                        client_name: parts[1] || "",
+                        transaction_date: parts[2] || "",
+                        status: normalizeStatus(parts[3]),
+                        system_name: parts[4] || "",
+                        payment: parts[5] || "",
+                        date_completed: parts[6] || "",
+                        transaction_cost: Number(parts[7] || 0)
+                    };
+                })
+                .sort((a, b) => {
+                    if (a.transaction_date === b.transaction_date) {
+                        return b.id - a.id;
+                    }
+                    return String(b.transaction_date).localeCompare(String(a.transaction_date));
+                })
+                .slice(0, 10);
+        }
+
+        function loadRecords() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) return JSON.parse(stored);
+            } catch (error) {}
+            const initial = parseSeedData();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+            return initial;
+        }
+
+        function loadTrash() {
+            try {
+                const stored = localStorage.getItem(TRASH_KEY);
+                if (stored) return JSON.parse(stored);
+            } catch (error) {}
+            localStorage.setItem(TRASH_KEY, JSON.stringify([]));
+            return [];
+        }
+
+        let records = loadRecords();
+        let trash = loadTrash();
+        let editingId = null;
+        let currentSearch = "";
+
+        const flashMessage = document.getElementById("flashMessage");
+        const drawerOverlay = document.getElementById("drawerOverlay");
+        const recordDrawer = document.getElementById("recordDrawer");
+        const detailModal = document.getElementById("detailModal");
+        const deleteModal = document.getElementById("deleteModal");
+        const modalBackdrop = document.getElementById("modalBackdrop");
+        const recordForm = document.getElementById("recordForm");
+        const statusField = document.getElementById("status");
+        const paymentField = document.getElementById("payment");
+        const otherPaymentField = document.getElementById("otherPayment");
+        const paymentFieldWrap = document.getElementById("paymentFieldWrap");
+        const dateCompletedWrap = document.getElementById("dateCompletedWrap");
+        const mobileSidebar = document.getElementById("mobileSidebar");
+        const mobileBackdrop = document.getElementById("mobileBackdrop");
+        const drawerModeLabel = document.getElementById("drawerModeLabel");
+        const drawerTitle = document.getElementById("drawerTitle");
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+            localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
+        }
+
+        function showFlash(text, tone = "success") {
+            flashMessage.textContent = text;
+            flashMessage.className = `flash show ${tone}`;
+            clearTimeout(showFlash.timer);
+            showFlash.timer = setTimeout(() => {
+                flashMessage.className = "flash";
+            }, 3500);
+        }
+
+        function getMetrics(items) {
+            const total = items.length;
+            const paid = items.filter((item) => item.status === "paid");
+            const unpaid = items.filter((item) => item.status !== "paid");
+            const paidRevenue = paid.reduce((sum, item) => sum + Number(item.transaction_cost || 0), 0);
+            const unpaidRevenue = unpaid.reduce((sum, item) => sum + Number(item.transaction_cost || 0), 0);
+            const totalRevenue = paidRevenue + unpaidRevenue;
+            const completionRate = total ? (paid.length / total) * 100 : 0;
+            const averageTicket = total ? totalRevenue / total : 0;
+            const payments = {};
+
+            items.forEach((item) => {
+                const key = (item.payment || "").trim() || "Pending";
+                payments[key] = (payments[key] || 0) + 1;
+            });
+
+            const paymentBreakdown = Object.entries(payments).sort((a, b) => b[1] - a[1]);
+            const topPayment = paymentBreakdown[0]?.[0] || "No data";
+
+            const monthlyRevenue = [];
+            const now = new Date("2026-03-31T12:00:00");
+            for (let i = 5; i >= 0; i -= 1) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+                const label = date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+                monthlyRevenue.push({ key, label, value: 0 });
+            }
+
+            items.forEach((item) => {
+                if (!item.transaction_date) return;
+                const monthKey = item.transaction_date.slice(0, 7);
+                const target = monthlyRevenue.find((entry) => entry.key === monthKey);
+                if (target) target.value += Number(item.transaction_cost || 0);
+            });
+
+            return {
+                total,
+                paidCount: paid.length,
+                unpaidCount: unpaid.length,
+                paidRevenue,
+                unpaidRevenue,
+                totalRevenue,
+                completionRate,
+                averageTicket,
+                paymentBreakdown,
+                topPayment,
+                monthlyRevenue
+            };
+        }
+
+        function renderMetrics() {
+            const metrics = getMetrics(records);
+            const maxBar = Math.max(...metrics.monthlyRevenue.map((item) => item.value), 0);
+
+            document.getElementById("sidebarTotalClients").textContent = number(metrics.total);
+            document.getElementById("mobileSidebarTotal").textContent = number(metrics.total);
+            document.getElementById("sidebarPaidRevenue").textContent = currency(metrics.paidRevenue);
+            document.getElementById("sidebarCompletion").textContent = `${number(metrics.completionRate, 1)}%`;
+            document.getElementById("topPaymentHero").textContent = metrics.topPayment;
+            document.getElementById("outstandingHero").textContent = currency(metrics.unpaidRevenue);
+            document.getElementById("averageTicketHero").textContent = currency(metrics.averageTicket);
+            document.getElementById("completionRateHero").textContent = `${number(metrics.completionRate, 1)}%`;
+            document.getElementById("completionBar").style.width = `${Math.max(5, Math.min(100, metrics.completionRate))}%`;
+            document.getElementById("paidCountMini").textContent = number(metrics.paidCount);
+            document.getElementById("unpaidCountMini").textContent = number(metrics.unpaidCount);
+            document.getElementById("totalClientsCard").textContent = number(metrics.total);
+            document.getElementById("paidProjectsCard").textContent = number(metrics.paidCount);
+            document.getElementById("completionTextCard").textContent = `${number(metrics.completionRate, 1)}%`;
+            document.getElementById("outstandingCard").textContent = currency(metrics.unpaidRevenue);
+            document.getElementById("unpaidSummaryCard").textContent = number(metrics.unpaidCount);
+            document.getElementById("totalRevenueCard").textContent = currency(metrics.totalRevenue);
+            document.getElementById("averageTicketCard").textContent = currency(metrics.averageTicket);
+            document.getElementById("paidRevenueBreakdown").textContent = currency(metrics.paidRevenue);
+            document.getElementById("unpaidRevenueBreakdown").textContent = currency(metrics.unpaidRevenue);
+            document.getElementById("topPaymentBreakdown").textContent = metrics.topPayment;
+            document.getElementById("insightPaid").textContent = `${number(metrics.paidCount)} paid records are already completed in the system.`;
+            document.getElementById("insightUnpaid").textContent = `${number(metrics.unpaidCount)} records still need payment follow-up.`;
+            document.getElementById("insightRevenue").textContent = `Revenue collected is ${currency(metrics.paidRevenue)} out of ${currency(metrics.totalRevenue)} total tracked value.`;
+            document.getElementById("insightTopPayment").textContent = `Most used payment label: ${metrics.topPayment}.`;
+
+            const revenueChart = document.getElementById("revenueChart");
+            revenueChart.innerHTML = metrics.monthlyRevenue.map((month) => {
+                const height = maxBar > 0 ? Math.max(24, (month.value / maxBar) * 180) : 24;
+                return `
+                    <div class="bar-item">
+                        <span style="font-size:0.78rem;color:#64748b;font-weight:700;">${currency(month.value)}</span>
+                        <div class="bar-shell">
+                            <div class="bar-fill" style="height:${Math.round(height)}px;"></div>
+                        </div>
+                        <span style="font-size:0.78rem;color:#64748b;text-align:center;">${escapeHtml(month.label)}</span>
+                    </div>
+                `;
+            }).join("");
+
+            const paymentBreakdownList = document.getElementById("paymentBreakdownList");
+            paymentBreakdownList.innerHTML = metrics.paymentBreakdown.slice(0, 4).map(([label, count]) => {
+                const width = metrics.total ? Math.max(8, (count / metrics.total) * 100) : 8;
+                return `
+                    <div class="payment-row">
+                        <label><span>${escapeHtml(label)}</span><strong>${number(count)}</strong></label>
+                        <div class="payment-track"><div style="width:${Math.min(width, 100)}%;"></div></div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function filteredRecords() {
+            const term = currentSearch.trim().toLowerCase();
+            if (!term) return records;
+            return records.filter((record) => Object.values(record).join(" ").toLowerCase().includes(term));
+        }
+
+        function renderRecords() {
+            const body = document.getElementById("recordsTableBody");
+            const items = filteredRecords();
+            if (!items.length) {
+                body.innerHTML = `<tr><td colspan="9" class="empty-state">No client records found.</td></tr>`;
+                return;
+            }
+
+            body.innerHTML = items.map((record) => `
+                <tr>
+                    <td><strong>${number(record.id)}</strong></td>
+                    <td>${escapeHtml(record.client_name)}</td>
+                    <td>${escapeHtml(record.transaction_date || "-")}</td>
+                    <td><span class="status-pill ${record.status === "paid" ? "paid" : "not-paid"}">${record.status === "paid" ? "Paid" : "Not Paid"}</span></td>
+                    <td>${escapeHtml(record.system_name)}</td>
+                    <td>${escapeHtml(record.payment || "Pending")}</td>
+                    <td>${escapeHtml(record.date_completed || "-")}</td>
+                    <td><strong>${currency(record.transaction_cost)}</strong></td>
+                    <td>
+                        <div class="actions">
+                            <button type="button" onclick="openViewModal(${record.id})">View</button>
+                            <button type="button" class="update" onclick="openEditDrawer(${record.id})">Update</button>
+                            <button type="button" class="delete" onclick="openDeleteConfirm(${record.id}, false)">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function renderTrash() {
+            const body = document.getElementById("trashTableBody");
+            document.getElementById("trashCount").textContent = number(trash.length);
+            if (!trash.length) {
+                body.innerHTML = `<tr><td colspan="6" class="empty-state">Trash is empty. Deleted records will appear here and can be restored.</td></tr>`;
+                return;
+            }
+
+            body.innerHTML = trash.map((record) => `
+                <tr>
+                    <td><strong>${number(record.id)}</strong></td>
+                    <td>${escapeHtml(record.client_name)}</td>
+                    <td>${escapeHtml(record.system_name)}</td>
+                    <td>${escapeHtml(record.deleted_at || "-")}</td>
+                    <td><strong>${currency(record.transaction_cost)}</strong></td>
+                    <td>
+                        <div class="actions">
+                            <button type="button" onclick="restoreRecord(${record.id})">Undo Delete</button>
+                            <button type="button" class="delete" onclick="openDeleteConfirm(${record.id}, true)">Delete Forever</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function refresh() {
+            saveState();
+            renderMetrics();
+            renderRecords();
+            renderTrash();
+        }
+
+        function openDrawer(editRecord = null) {
+            editingId = editRecord ? editRecord.id : null;
+            drawerModeLabel.textContent = editRecord ? "Update Record" : "New Record";
+            drawerTitle.textContent = editRecord ? "Update Client Record" : "Add Client Record";
+            recordForm.reset();
+
+            if (editRecord) {
+                document.getElementById("clientName").value = editRecord.client_name || "";
+                document.getElementById("transactionDate").value = editRecord.transaction_date || "";
+                statusField.value = editRecord.status || "";
+                document.getElementById("systemName").value = editRecord.system_name || "";
+                paymentField.value = ["gcash", "cash", "online", "Pending"].includes(editRecord.payment) ? editRecord.payment : (editRecord.payment ? "other" : "");
+                otherPaymentField.value = ["gcash", "cash", "online", "Pending"].includes(editRecord.payment) ? "" : (editRecord.payment || "");
+                document.getElementById("dateCompleted").value = editRecord.date_completed || "";
+                document.getElementById("transactionCost").value = editRecord.transaction_cost ?? "";
+            }
+
+            syncPaymentFields();
+            drawerOverlay.classList.add("show");
+            recordDrawer.classList.add("show");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeDrawer() {
+            recordDrawer.classList.remove("show");
+            drawerOverlay.classList.remove("show");
+            document.body.style.overflow = "";
+        }
+
+        function openModal(content, small = false) {
+            detailModal.classList.remove("show");
+            deleteModal.classList.remove("show");
+            const target = small ? deleteModal : detailModal;
+            target.innerHTML = content;
+            target.classList.add("show");
+            modalBackdrop.classList.add("show");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeModal() {
+            detailModal.classList.remove("show");
+            deleteModal.classList.remove("show");
+            modalBackdrop.classList.remove("show");
+            if (!recordDrawer.classList.contains("show")) {
+                document.body.style.overflow = "";
+            }
+        }
+
+        function syncPaymentFields() {
+            const isPaid = statusField.value === "paid";
+            paymentFieldWrap.style.display = isPaid ? "" : "none";
+            dateCompletedWrap.style.display = isPaid ? "" : "none";
+
+            if (!isPaid) {
+                paymentField.value = "";
+                otherPaymentField.value = "";
+                otherPaymentField.style.display = "none";
+                document.getElementById("dateCompleted").value = "";
+                return;
+            }
+
+            otherPaymentField.style.display = paymentField.value === "other" ? "" : "none";
+        }
+
+        function getNextId() {
+            const ids = [...records, ...trash].map((item) => Number(item.id) || 0);
+            return (Math.max(...ids, 0) || 0) + 1;
+        }
+
+        function recordById(id) {
+            return records.find((item) => item.id === Number(id));
+        }
+
+        function trashById(id) {
+            return trash.find((item) => item.id === Number(id));
+        }
+
+        window.openViewModal = function openViewModal(id) {
+            const record = recordById(id);
+            if (!record) return;
+            openModal(`
+                <div class="modal-head">
+                    <div>
+                        <p class="section-label">Client Record</p>
+                        <h3 class="modal-title" style="font-size:2rem;margin-top:8px;">${escapeHtml(record.client_name)}</h3>
+                    </div>
+                    <button class="close-btn" type="button" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="detail-grid">
+                    <div class="detail-card"><span class="eyebrow" style="color:#64748b;">ID</span><strong>${number(record.id)}</strong></div>
+                    <div class="detail-card"><span class="eyebrow" style="color:#64748b;">Status</span><strong>${record.status === "paid" ? "Paid" : "Not Paid"}</strong></div>
+                    <div class="detail-card"><span class="eyebrow" style="color:#64748b;">Transaction Date</span><strong>${escapeHtml(record.transaction_date || "-")}</strong></div>
+                    <div class="detail-card"><span class="eyebrow" style="color:#64748b;">Payment</span><strong>${escapeHtml(record.payment || "Pending")}</strong></div>
+                    <div class="detail-card"><span class="eyebrow" style="color:#64748b;">Date Completed</span><strong>${escapeHtml(record.date_completed || "-")}</strong></div>
+                    <div class="detail-card"><span class="eyebrow" style="color:#64748b;">Transaction Cost</span><strong>${currency(record.transaction_cost)}</strong></div>
+                    <div class="detail-card" style="grid-column:1 / -1;"><span class="eyebrow" style="color:#64748b;">System Name</span><strong>${escapeHtml(record.system_name)}</strong></div>
+                </div>
+                <div class="modal-actions">
+                    <button class="ghost-btn" type="button" onclick="closeModal()">Close</button>
+                    <button class="primary-btn" type="button" onclick="closeModal(); openEditDrawer(${record.id});">Update</button>
+                </div>
+            `);
+        };
+
+        window.openEditDrawer = function openEditDrawer(id) {
+            const record = recordById(id);
+            if (!record) return;
+            closeModal();
+            openDrawer(record);
+        };
+
+        window.openDeleteConfirm = function openDeleteConfirm(id, permanentDelete) {
+            const record = permanentDelete ? trashById(id) : recordById(id);
+            if (!record) return;
+            openModal(`
+                <div class="modal-head">
+                    <div>
+                        <p class="section-label" style="color:#e11d48;">Delete Management</p>
+                        <h3 class="modal-title" style="font-size:1.8rem;margin-top:8px;">${permanentDelete ? "Permanently delete this record?" : "Move this record to trash?"}</h3>
+                    </div>
+                    <button class="close-btn" type="button" onclick="closeModal()">&times;</button>
+                </div>
+                <p style="color:#64748b;line-height:1.7;margin-top:14px;">${permanentDelete ? `This will remove "${escapeHtml(record.client_name)}" from trash permanently. You will not be able to undo this action.` : `This will move "${escapeHtml(record.client_name)}" to trash. You can undo the delete later from Trash Management.`}</p>
+                <div class="modal-actions">
+                    <button class="ghost-btn" type="button" onclick="closeModal()">Cancel</button>
+                    <button class="danger-btn" type="button" onclick="${permanentDelete ? `deleteForever(${record.id})` : `moveToTrash(${record.id})`}">${permanentDelete ? "Delete Forever" : "Move to Trash"}</button>
+                </div>
+            `, true);
+        };
+
+        window.closeModal = closeModal;
+
+        window.moveToTrash = function moveToTrash(id) {
+            const index = records.findIndex((item) => item.id === Number(id));
+            if (index < 0) return;
+            const [record] = records.splice(index, 1);
+            record.deleted_at = new Date().toISOString().slice(0, 19).replace("T", " ");
+            trash.unshift(record);
+            closeModal();
+            refresh();
+            showFlash("Record moved to trash. You can restore it below.", "warn");
+        };
+
+        window.restoreRecord = function restoreRecord(id) {
+            const index = trash.findIndex((item) => item.id === Number(id));
+            if (index < 0) return;
+            const [record] = trash.splice(index, 1);
+            delete record.deleted_at;
+            records.unshift(record);
+            refresh();
+            showFlash("Deleted record restored successfully.");
+        };
+
+        window.deleteForever = function deleteForever(id) {
+            trash = trash.filter((item) => item.id !== Number(id));
+            closeModal();
+            refresh();
+            showFlash("Record permanently deleted from trash.", "warn");
+        };
+
+        function closeMobileSidebar() {
+            mobileSidebar.classList.remove("show");
+            mobileBackdrop.classList.remove("show");
+            document.body.style.overflow = recordDrawer.classList.contains("show") || detailModal.classList.contains("show") || deleteModal.classList.contains("show") ? "hidden" : "";
+        }
+
+        function openMobileSidebar() {
+            mobileSidebar.classList.add("show");
+            mobileBackdrop.classList.add("show");
+            document.body.style.overflow = "hidden";
+        }
+
+        recordForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const paymentValue = statusField.value === "paid"
+                ? (paymentField.value === "other" ? otherPaymentField.value.trim() : paymentField.value)
+                : "";
+
+            const payload = {
+                id: editingId ?? getNextId(),
+                client_name: document.getElementById("clientName").value.trim(),
+                transaction_date: document.getElementById("transactionDate").value,
+                status: normalizeStatus(statusField.value),
+                system_name: document.getElementById("systemName").value.trim(),
+                payment: paymentValue.trim(),
+                date_completed: statusField.value === "paid" ? document.getElementById("dateCompleted").value : "",
+                transaction_cost: Number(document.getElementById("transactionCost").value || 0)
+            };
+
+            if (editingId) {
+                records = records.map((item) => item.id === editingId ? payload : item);
+                showFlash("Record updated successfully.");
+            } else {
+                records.unshift(payload);
+                showFlash("Client transaction added successfully.");
+            }
+
+            closeDrawer();
+            refresh();
+        });
+
+        statusField.addEventListener("change", syncPaymentFields);
+        paymentField.addEventListener("change", syncPaymentFields);
+        document.getElementById("searchInput").addEventListener("input", (event) => {
+            currentSearch = event.target.value;
+            renderRecords();
+        });
+
+        [
+            "openAddFromSidebar",
+            "openAddFromTop",
+            "openAddFromHero",
+            "openAddFromMobile"
+        ].forEach((id) => {
+            const button = document.getElementById(id);
+            if (button) {
+                button.addEventListener("click", () => {
+                    closeMobileSidebar();
+                    openDrawer();
+                });
+            }
+        });
+
+        document.getElementById("closeDrawer").addEventListener("click", closeDrawer);
+        document.getElementById("cancelDrawer").addEventListener("click", closeDrawer);
+        drawerOverlay.addEventListener("click", closeDrawer);
+        modalBackdrop.addEventListener("click", closeModal);
+        document.getElementById("openMobileMenu").addEventListener("click", openMobileSidebar);
+        mobileBackdrop.addEventListener("click", closeMobileSidebar);
+        document.querySelectorAll(".mobile-nav").forEach((link) => {
+            link.addEventListener("click", closeMobileSidebar);
+        });
+
+        refresh();
+        syncPaymentFields();
+    </script>
+</body>
+</html>
