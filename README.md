@@ -1,4 +1,6 @@
 # Client Project & Payment Management System
+<img width="800" height="500" alt="Screenshot 2026-03-31 at 12 48 05 AM" src="https://github.com/user-attachments/assets/c0cd5c6f-a4de-4ab8-bd6d-a03a8d1caeff" />
+<img width="800" height="500" alt="Screenshot 2026-03-31 at 12 48 24 AM" src="https://github.com/user-attachments/assets/b93726b4-9d1a-4e1a-81f0-98276f5fa3aa" />
 
 A PHP and MySQL dashboard for managing client transactions, project progress, payment status, revenue metrics, and soft-deleted records. The interface is styled with Tailwind CSS and designed to run locally through XAMPP.
 
