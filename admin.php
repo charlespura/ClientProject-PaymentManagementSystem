@@ -145,7 +145,7 @@ $topPaymentMethod = (string) (array_key_first($paymentBreakdown) ?? "No data");
         <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:72px_72px] opacity-40"></div>
 
         <div class="mx-auto flex min-h-screen max-w-[1600px] lg:flex-row">
-            <aside id="sidebar" class="scrollbar-thin fixed inset-y-0 left-0 z-40 w-[76vw] max-w-68 -translate-x-full overflow-y-auto border-r border-white/40 bg-slate-950/95 px-5 py-6 text-white shadow-soft backdrop-blur-xl transition-transform duration-300 sm:w-68 sm:px-5 sm:py-7 lg:w-64 lg:max-w-64 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0">
+            <aside id="sidebar" class="scrollbar-thin fixed inset-y-0 left-0 z-40 w-[76vw] max-w-68 -translate-x-full overflow-y-auto border-r border-white/40 bg-slate-950/95 px-5 py-6 text-white shadow-soft backdrop-blur-xl transition-transform duration-300 sm:w-68 sm:px-5 sm:py-7 lg:w-64 lg:max-w-64">
                 <div class="flex items-center gap-4">
                     <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/15">
                         <img class="h-11 w-11 object-contain" src="logo.png" alt="Business logo">
@@ -178,15 +178,17 @@ $topPaymentMethod = (string) (array_key_first($paymentBreakdown) ?? "No data");
                 </div>
             </aside>
 
-            <div id="sidebarBackdrop" class="fixed inset-0 z-30 hidden bg-slate-950/50 backdrop-blur-sm lg:hidden"></div>
+            <div id="sidebarBackdrop" class="fixed inset-0 z-30 hidden bg-slate-950/50 backdrop-blur-sm"></div>
 
             <main class="min-w-0 w-full flex-1 px-4 py-4 sm:px-6 lg:px-8 lg:py-8">
                 <div class="overflow-hidden rounded-[32px] border border-white/60 bg-white/70 p-4 shadow-soft backdrop-blur-xl sm:p-6 lg:p-8">
                     <header class="flex flex-col gap-6 border-b border-slate-200/70 pb-8 lg:flex-row lg:items-center lg:justify-between">
                         <div class="flex items-start gap-4">
-                            <button id="menuButton" type="button" class="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm lg:hidden">
-                                <span class="text-xl">☰</span>
-                            </button>
+	                            <button id="menuButton" type="button" aria-controls="sidebar" aria-expanded="false" class="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm">
+	                                <span class="sr-only">Toggle menu</span>
+	                                <span id="menuIconOpen" class="text-xl leading-none" aria-hidden="true">☰</span>
+	                                <span id="menuIconClose" class="hidden text-3xl leading-none" aria-hidden="true">&times;</span>
+	                            </button>
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-[0.32em] text-slate-500">Client Project & Payment Management System</p>
                                 <h2 class="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Professional dashboard for projects, billing, and payment tracking.</h2>
@@ -611,15 +613,17 @@ $topPaymentMethod = (string) (array_key_first($paymentBreakdown) ?? "No data");
         </div>
     </div>
 
-    <script>
-    const sidebar = document.getElementById('sidebar');
-    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
-    const menuButton = document.getElementById('menuButton');
-    const formPanel = document.getElementById('formPanel');
-    const toggleFormBtn = document.getElementById('toggleForm');
-    const openFormLink = document.getElementById('openFormLink');
-    const closeFormButton = document.getElementById('closeFormButton');
-    const cancelFormButton = document.getElementById('cancelFormButton');
+	    <script>
+	    const sidebar = document.getElementById('sidebar');
+	    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+	    const menuButton = document.getElementById('menuButton');
+	    const menuIconOpen = document.getElementById('menuIconOpen');
+	    const menuIconClose = document.getElementById('menuIconClose');
+	    const formPanel = document.getElementById('formPanel');
+	    const toggleFormBtn = document.getElementById('toggleForm');
+	    const openFormLink = document.getElementById('openFormLink');
+	    const closeFormButton = document.getElementById('closeFormButton');
+	    const cancelFormButton = document.getElementById('cancelFormButton');
     const formOverlay = document.getElementById('formOverlay');
     const statusField = document.getElementById('status');
     const paymentField = document.getElementById('payment');
@@ -638,18 +642,33 @@ $topPaymentMethod = (string) (array_key_first($paymentBreakdown) ?? "No data");
     const deleteActionInput = document.getElementById('deleteActionInput');
     const deleteIdInput = document.getElementById('deleteIdInput');
     const deleteModalTitle = document.getElementById('deleteModalTitle');
-    const deleteModalText = document.getElementById('deleteModalText');
-    const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+	    const deleteModalText = document.getElementById('deleteModalText');
+	    const confirmDeleteButton = document.getElementById('confirmDeleteButton');
 
-    function openSidebar() {
-        sidebar.classList.remove('-translate-x-full');
-        sidebarBackdrop.classList.remove('hidden');
-    }
+	    function isSidebarOpen() {
+	        return !sidebar.classList.contains('-translate-x-full');
+	    }
 
-    function closeSidebar() {
-        sidebar.classList.add('-translate-x-full');
-        sidebarBackdrop.classList.add('hidden');
-    }
+	    function syncMenuIcon(isOpen) {
+	        if (!menuIconOpen || !menuIconClose) {
+	            return;
+	        }
+	        menuIconOpen.classList.toggle('hidden', isOpen);
+	        menuIconClose.classList.toggle('hidden', !isOpen);
+	        menuButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+	    }
+
+	    function openSidebar() {
+	        sidebar.classList.remove('-translate-x-full');
+	        sidebarBackdrop.classList.remove('hidden');
+	        syncMenuIcon(true);
+	    }
+
+	    function closeSidebar() {
+	        sidebar.classList.add('-translate-x-full');
+	        sidebarBackdrop.classList.add('hidden');
+	        syncMenuIcon(false);
+	    }
 
     function openForm() {
         formPanel.classList.remove('hidden');
@@ -765,12 +784,18 @@ $topPaymentMethod = (string) (array_key_first($paymentBreakdown) ?? "No data");
         document.body.classList.remove('overflow-hidden');
     }
 
-    menuButton.addEventListener('click', openSidebar);
-    sidebarBackdrop.addEventListener('click', closeSidebar);
-    toggleFormBtn.addEventListener('click', openForm);
-    openFormLink.addEventListener('click', openForm);
-    closeFormButton.addEventListener('click', closeForm);
-    cancelFormButton.addEventListener('click', closeForm);
+	    menuButton.addEventListener('click', function () {
+	        if (isSidebarOpen()) {
+	            closeSidebar();
+	            return;
+	        }
+	        openSidebar();
+	    });
+	    sidebarBackdrop.addEventListener('click', closeSidebar);
+	    toggleFormBtn.addEventListener('click', openForm);
+	    openFormLink.addEventListener('click', openForm);
+	    closeFormButton.addEventListener('click', closeForm);
+	    cancelFormButton.addEventListener('click', closeForm);
     formOverlay.addEventListener('click', closeForm);
     closeModalButton.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', closeModal);
@@ -792,9 +817,11 @@ $topPaymentMethod = (string) (array_key_first($paymentBreakdown) ?? "No data");
         });
     });
 
-    if (<?php echo ($client_nameErr !== "" || $transaction_dateErr !== "" || $statusErr !== "" || $system_nameErr !== "" || $transaction_costErr !== "") ? 'true' : 'false'; ?>) {
-        openForm();
-    }
-    </script>
-</body>
-</html>
+	    if (<?php echo ($client_nameErr !== "" || $transaction_dateErr !== "" || $statusErr !== "" || $system_nameErr !== "" || $transaction_costErr !== "") ? 'true' : 'false'; ?>) {
+	        openForm();
+	    }
+
+	    syncMenuIcon(isSidebarOpen());
+	    </script>
+	</body>
+	</html>

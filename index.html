@@ -805,15 +805,36 @@
             transform: translateX(0);
         }
 
-        .menu-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            border: 1px solid var(--line);
-            background: #fff;
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
+	        .menu-btn {
+	            width: 48px;
+	            height: 48px;
+	            border-radius: 16px;
+	            border: 1px solid var(--line);
+	            background: #fff;
+	            cursor: pointer;
+	            font-size: 1.1rem;
+	        }
+
+	        .menu-btn .menu-icon {
+	            display: inline-flex;
+	            align-items: center;
+	            justify-content: center;
+	            width: 100%;
+	            height: 100%;
+	            line-height: 1;
+	        }
+
+	        .menu-btn .menu-close {
+	            display: none;
+	        }
+
+	        .menu-btn.is-open .menu-open {
+	            display: none;
+	        }
+
+	        .menu-btn.is-open .menu-close {
+	            display: inline-flex;
+	        }
 
         @media (max-width: 1200px) {
             .stats-grid,
@@ -911,10 +932,13 @@
 
         <div class="content">
             <div class="shell">
-                <div class="topbar">
-                    <button class="menu-btn" id="openMobileMenu" type="button">☰</button>
-                    <button class="primary-btn" id="openAddFromTop" type="button">Add Client Record</button>
-                </div>
+	                <div class="topbar">
+	                    <button class="menu-btn" id="openMobileMenu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileSidebar">
+	                        <span class="menu-icon menu-open" aria-hidden="true">☰</span>
+	                        <span class="menu-icon menu-close" aria-hidden="true">×</span>
+	                    </button>
+	                    <button class="primary-btn" id="openAddFromTop" type="button">Add Client Record</button>
+	                </div>
 
                 <header class="hero">
                     <div>
@@ -1303,11 +1327,12 @@
         const paymentField = document.getElementById("payment");
         const otherPaymentField = document.getElementById("otherPayment");
         const paymentFieldWrap = document.getElementById("paymentFieldWrap");
-        const dateCompletedWrap = document.getElementById("dateCompletedWrap");
-        const mobileSidebar = document.getElementById("mobileSidebar");
-        const mobileBackdrop = document.getElementById("mobileBackdrop");
-        const drawerModeLabel = document.getElementById("drawerModeLabel");
-        const drawerTitle = document.getElementById("drawerTitle");
+	        const dateCompletedWrap = document.getElementById("dateCompletedWrap");
+	        const mobileSidebar = document.getElementById("mobileSidebar");
+	        const mobileBackdrop = document.getElementById("mobileBackdrop");
+	        const openMobileMenu = document.getElementById("openMobileMenu");
+	        const drawerModeLabel = document.getElementById("drawerModeLabel");
+	        const drawerTitle = document.getElementById("drawerTitle");
 
         function saveState() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
@@ -1656,17 +1681,35 @@
             showFlash("Record permanently deleted from trash.", "warn");
         };
 
-        function closeMobileSidebar() {
-            mobileSidebar.classList.remove("show");
-            mobileBackdrop.classList.remove("show");
-            document.body.style.overflow = recordDrawer.classList.contains("show") || detailModal.classList.contains("show") || deleteModal.classList.contains("show") ? "hidden" : "";
-        }
+	        function setMobileMenuOpen(isOpen) {
+	            if (!openMobileMenu) return;
+	            openMobileMenu.classList.toggle("is-open", Boolean(isOpen));
+	            openMobileMenu.setAttribute("aria-expanded", isOpen ? "true" : "false");
+	            openMobileMenu.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+	        }
 
-        function openMobileSidebar() {
-            mobileSidebar.classList.add("show");
-            mobileBackdrop.classList.add("show");
-            document.body.style.overflow = "hidden";
-        }
+	        function closeMobileSidebar() {
+	            mobileSidebar.classList.remove("show");
+	            mobileBackdrop.classList.remove("show");
+	            document.body.style.overflow = recordDrawer.classList.contains("show") || detailModal.classList.contains("show") || deleteModal.classList.contains("show") ? "hidden" : "";
+	            setMobileMenuOpen(false);
+	        }
+
+	        function openMobileSidebar() {
+	            mobileSidebar.classList.add("show");
+	            mobileBackdrop.classList.add("show");
+	            document.body.style.overflow = "hidden";
+	            setMobileMenuOpen(true);
+	        }
+
+	        function toggleMobileSidebar() {
+	            const isOpen = mobileSidebar.classList.contains("show");
+	            if (isOpen) {
+	                closeMobileSidebar();
+	            } else {
+	                openMobileSidebar();
+	            }
+	        }
 
         recordForm.addEventListener("submit", (event) => {
             event.preventDefault();
@@ -1719,15 +1762,15 @@
             }
         });
 
-        document.getElementById("closeDrawer").addEventListener("click", closeDrawer);
-        document.getElementById("cancelDrawer").addEventListener("click", closeDrawer);
-        drawerOverlay.addEventListener("click", closeDrawer);
-        modalBackdrop.addEventListener("click", closeModal);
-        document.getElementById("openMobileMenu").addEventListener("click", openMobileSidebar);
-        mobileBackdrop.addEventListener("click", closeMobileSidebar);
-        document.querySelectorAll(".mobile-nav").forEach((link) => {
-            link.addEventListener("click", closeMobileSidebar);
-        });
+	        document.getElementById("closeDrawer").addEventListener("click", closeDrawer);
+	        document.getElementById("cancelDrawer").addEventListener("click", closeDrawer);
+	        drawerOverlay.addEventListener("click", closeDrawer);
+	        modalBackdrop.addEventListener("click", closeModal);
+	        openMobileMenu.addEventListener("click", toggleMobileSidebar);
+	        mobileBackdrop.addEventListener("click", closeMobileSidebar);
+	        document.querySelectorAll(".mobile-nav").forEach((link) => {
+	            link.addEventListener("click", closeMobileSidebar);
+	        });
 
         refresh();
         syncPaymentFields();
